@@ -1,6 +1,5 @@
 from flask import Flask
 import json
-import speech_recognition as sr
 from dotenv import load_dotenv 
 import os 
 
@@ -8,21 +7,6 @@ app = Flask(__name__)
 
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
-
-def listen():
-    r = sr.Recognizer()
-    with sr.Microphone() as source:
-        print("listening...")
-        r.pause_threshold = 1
-        audio = r.listen(source)
-    try:
-        query = r.recognize_google(audio, language='en-in')
-        print(f"user said: {query}\n")
-        return query.lower()
-    except Exception:
-        return "none"
-
-MEMORY_FILE = "memory.json"
 
 def load_memory():
     try:
@@ -158,14 +142,5 @@ def get_reply(message):
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
-    
-    while True:
-        command = listen()
-        
-        if "luna" in command:
             # Here you would call your chat logic
-            response = "I am processing your request right now."
-            
-        elif "go to sleep" in command:
-            break
  
