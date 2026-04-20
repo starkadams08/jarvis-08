@@ -1,6 +1,5 @@
 from flask import Flask
 import json
-import pyttsx3
 import speech_recognition as sr
 from dotenv import load_dotenv 
 import os 
@@ -9,14 +8,6 @@ app = Flask(__name__)
 
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
-
-engine = pyttsx3.init()
-engine.setProperty("rate", 170)
-
-def speak(text):
-    print(f"Luna: {text}")
-    engine.say(text)
-    engine.runAndWait()
 
 def listen():
     r = sr.Recognizer()
@@ -168,17 +159,13 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
     
-    speak("Systems online. How can I help you, Sir?")
-    
     while True:
         command = listen()
         
         if "luna" in command:
             # Here you would call your chat logic
-            response = "I am processing your request now."
-            speak(response)
+            response = "I am processing your request right now."
             
         elif "go to sleep" in command:
-            speak("Powering down. Goodbye.")
             break
  
