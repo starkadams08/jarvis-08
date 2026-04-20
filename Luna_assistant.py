@@ -1,6 +1,4 @@
 from flask import Flask
-import tkinter as tk
-from tkinter import scrolledtext
 import json
 import pyttsx3
 import speech_recognition as sr
@@ -32,42 +30,6 @@ def listen():
         return query.lower()
     except Exception:
         return "none"
-    
-# Create main window
-root = tk.Tk()
-root.title(" LUNA - Royal AI assistant")
-root.geometry("500x600")
-root.resizable(False, False)
-
-# Chat display
-chat_display = scrolledtext.ScrolledText(root, wrap=tk.WORD, font=("Arial", 11))
-chat_display.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
-chat_display.config(state=tk.DISABLED)
-
-# Input field
-user_input = tk.Entry(root, font=("Arial", 12))
-user_input.pack(padx=10, pady=5, fill=tk.X)
-
-def send_message():
-    message = user_input.get().strip()
-    if not message:
-        return
-    
-    chat_display.config(state=tk.NORMAL)
-    chat_display.insert(tk.END, f"You: {message}\n")
-    chat_display.config(state=tk.DISABLED)
-
-    reply = get_reply(message)
-
-    chat_display.config(state=tk.NORMAL)
-    chat_display.insert(tk.END, f"LUNA: {reply}\n\n")
-    chat_display.config(state=tk.DISABLED)
-
-    user_input.delete(0, tk.END)
-
-# Send button
-send_button = tk.Button(root, text="Send", command=send_message)
-send_button.pack(pady=5)
 
 MEMORY_FILE = "memory.json"
 
@@ -199,11 +161,6 @@ def get_reply(message):
             reply = "I'm listening. You can chat with me or manage your tasks."
 
     return reply
-
-# Start message
-chat_display.config(state=tk.NORMAL)
-chat_display.insert(tk.END, "LUNA: Hello! I'm LUNA, your Royal AI Assistant. How can I assist you today?\n\n")
-chat_display.config(state=tk.DISABLED)
 
 # ... your speak and listen functions ...
 
