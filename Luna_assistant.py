@@ -8,6 +8,11 @@ app = Flask(__name__)
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
 
+def speak(text):
+    # We print to the logs so you can see what Luna says in the render dashboard
+    print(f"Luna says: {text}")
+    return text
+
 def load_memory():
     try:
      with open("memory.json", "r") as f:
