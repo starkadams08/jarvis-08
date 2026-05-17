@@ -1,20 +1,51 @@
 <script>
-    async function send() {
-        let message = document.getElementById("msg").value;
-        
-        let res = await fetch("http://127.0.0.1:5000/chat", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({message})
-        });
-        
-        let data = await res.json();
-        document.getElementById("reply").innerText = data.reply;
-    }
+    async function sendMessage() {
+        const inputField = document.getElementById('user-input');
+        const chatContainer = document.getElementById('user-input');
+        const messageText = inputField.value.trim();
 
-    function speak(text) {
-        const utterance = new SpeechSynthesisUtterance(text);
-        window.speechSynthesis.speak(utterance);
-    }
+        if (!messageText) return;
+        
+        // 1. Append user message to chat
+        const userDivb = document.createElement('div');
+        userDivb.className = 'message user-message';
+        userDivb.innerText = messageText;
 
+        chatContainer.appendChild(userDivb);
+
+        // Clear input field and scroll down 
+        inputField.value = '';
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        try {
+            // 2. Pointing to your exact backend route: /chat 
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: messageText }),
+            });
+
+            const data = await response.json();
+
+            // 3. Matching your backend JSON key: data.reply
+            const lunaDiv = document.createElement('div');
+            lunaDiv.className = 'message luna-message';
+            lunaDiv.innerText = "Luna: " + (data.reply || "No response recieved.");
+
+            chatContainer.appendChild(lunaDiv);
+        } catch (error) {
+            console.error('Error:', error);
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'message luna-message';
+            errorDiv.innerText = "Luna: System error. Check server logs.";
+
+            chatContainer.appendChild(errorDiv);
+        }
+
+        // Scroll to the bottom again
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
 </script>
+
