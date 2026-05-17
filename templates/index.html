@@ -108,6 +108,60 @@
             <input type="text" id="user-input" placeholder="Say something to Luna..." onkeydown="if(event.key === 'Enter') sendMessage()">
             <button onclick="sendMessage()">Send</button>
         </div>
+<script>
+    async function sendMessage() {
+        const inputField = document.getElementById('user-input');
+        const chatContainer = document.getElementById('chat-container');
+
+        // If it can't find the element, stop
+        if (!inputField || !chatContainer) return;
+
+        const messageText = inputField.value.trim();
+        if (!messageText) return;
+        
+        // 1. Force the message onto the screen immediately
+        const userDivb = document.createElement('div');
+        userDivb.className = 'message user-message';
+        userDivb.innerText = messageText;
+
+        chatContainer.appendChild(userDivb);
+
+        // Clear input field and scroll down 
+        inputField.value = '';
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        try {
+            // 2. Pointing to your exact backend route: /chat 
+            //  Talk to Flask, send the message, and wait for the response
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: messageText }),
+            });
+
+            const data = await response.json();
+
+            // 3. Matching your backend JSON key: data.reply
+            const lunaDiv = document.createElement('div');
+            lunaDiv.className = 'message luna-message';
+            lunaDiv.innerText = "Luna: " + (data.reply || "No response recieved.");
+
+            chatContainer.appendChild(lunaDiv);
+        } catch (error) {
+            console.error('Error:', error);
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'message luna-message';
+            errorDiv.innerText = "Luna: System error. Check server logs.";
+
+            chatContainer.appendChild(errorDiv);
+        }
+
+        // Scroll to the bottom again
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+</script>
 
 </body>
 </html>
