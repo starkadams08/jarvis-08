@@ -1,12 +1,15 @@
 <script>
     async function sendMessage() {
         const inputField = document.getElementById('user-input');
-        const chatContainer = document.getElementById('user-input');
-        const messageText = inputField.value.trim();
+        const chatContainer = document.getElementById('chat-container');
 
+        // If it can't find the element, stop
+        if (!inputField || !chatContainer) return;
+
+        const messageText = inputField.value.trim();
         if (!messageText) return;
         
-        // 1. Append user message to chat
+        // 1. Force the message onto the screen immediately
         const userDivb = document.createElement('div');
         userDivb.className = 'message user-message';
         userDivb.innerText = messageText;
@@ -19,6 +22,7 @@
 
         try {
             // 2. Pointing to your exact backend route: /chat 
+            //  Talk to Flask, send the message, and wait for the response
             const response = await fetch('/chat', {
                 method: 'POST',
                 headers: {
